@@ -1,3 +1,4 @@
+import 'package:chat_app/view/pages/sign_up_screen.dart';
 import 'package:chat_app/view/widgets/signup_screen_widgets/signup_texfeild_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/core/extension/app_sizes.dart';
@@ -5,8 +6,8 @@ import 'package:chat_app/view/pages/home_screen.dart';
 import 'package:chat_app/view/widgets/signup_screen_widgets/continuewith_button_widget.dart';
 import 'package:chat_app/view/widgets/signup_screen_widgets/textbutton_widget.dart';
 
-class SignUpScreen extends StatelessWidget {
-  SignUpScreen({super.key});
+class SignInScreen extends StatelessWidget {
+  SignInScreen({super.key});
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -26,7 +27,7 @@ class SignUpScreen extends StatelessWidget {
                 height: 130,
               ),
               const Text(
-                "Create Your Account",
+                "SignIn",
                 style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
@@ -35,20 +36,6 @@ class SignUpScreen extends StatelessWidget {
               ),
               const SizedBox(
                 height: 40,
-              ),
-              SignupTextFormFieldWidget(
-                controller: userNameController,
-                labelText: 'Username',
-                prefixIcon: Icons.person,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter Username text';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(
-                height: 25,
               ),
               SignupTextFormFieldWidget(
                 controller: emailController,
@@ -109,7 +96,7 @@ class SignUpScreen extends StatelessWidget {
                       );
                     }
                   },
-                  child: const Text('SignUp'),
+                  child: const Text('Sign In'),
                 ),
               ),
               const SizedBox(
@@ -173,10 +160,14 @@ class SignUpScreen extends StatelessWidget {
               ),
               TextbuttonWidget(
                 onpress: () {
-                  Navigator.pop(context);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SignUpScreen(),
+                      ));
                 },
-                text: 'Already Have an Account?',
-                text1: 'Sign In',
+                text: 'Don\'t have an account? ',
+                text1: 'SignUp',
               ),
             ],
           ),

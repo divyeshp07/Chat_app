@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:chat_app/view/pages/sign_up_screen.dart';
+import 'package:chat_app/view/pages/signin_screen.dart';
+import 'package:chat_app/view/pages/spalsh_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -21,10 +23,11 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      // home: SplashScreen(),
+      home: SplashScreen(),
       // home: IntroScreen(),
       // home: AuthScreen(),
-      home: SignUpScreen(),
+      // home: SignUpScreen(),
+      // home: SignInScreen(),
     );
   }
 }

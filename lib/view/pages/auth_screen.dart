@@ -1,4 +1,5 @@
 import 'package:chat_app/view/pages/sign_up_screen.dart';
+import 'package:chat_app/view/pages/signin_screen.dart';
 import 'package:chat_app/view/widgets/auth_screen_widgets/continuwith_btn_widget.dart';
 import 'package:chat_app/view/widgets/signup_screen_widgets/textbutton_widget.dart';
 import 'package:flutter/material.dart';
@@ -89,7 +90,14 @@ class AuthScreen extends StatelessWidget {
             height: 50,
             width: MediaQuery.sizeOf(context).width / 1.3,
             child: ElevatedButton(
-                onPressed: () {}, child: const Text('SignIn with Email&Pass')),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SignInScreen(),
+                      ));
+                },
+                child: const Text('SignIn with Email')),
           ),
           const SizedBox(
             height: 30,
