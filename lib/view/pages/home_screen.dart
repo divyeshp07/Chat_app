@@ -1,111 +1,11 @@
-// import 'package:chat_app/service/auth-services/auth_services.dart';
-// import 'package:chat_app/service/chat-services/chat_services.dart';
-// import 'package:chat_app/view/pages/chat_screen.dart';
-// import 'package:flutter/material.dart';
-// import 'package:go_router/go_router.dart';
-
-// class HomeScreen extends StatelessWidget {
-//   HomeScreen({super.key});
-//   static const routePath = '/homescreen';
-//   final AuthServices _authServices = AuthServices();
-//   final ChatServices _chatServices = ChatServices();
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//         appBar: AppBar(
-//           title: const Text('ChatBox'),
-//           actions: [
-//             IconButton(
-//                 onPressed: () {
-//                   context.pop();
-//                 },
-//                 icon: const Icon(Icons.arrow_back))
-//           ],
-//         ),
-//         body: buildUserList());
-//   }
-
-//   Widget buildUserList() {
-//     return StreamBuilder(
-//       stream: _chatServices.getUserStream(),
-//       builder: (context, snapshot) {
-//         if (snapshot.hasError) {
-//           return const Center(child: Text('Error'));
-//         }
-//         if (snapshot.connectionState == ConnectionState.waiting) {
-//           return const Center(child: Text('Loading'));
-//         }
-//         return ListView(
-//           children: snapshot.data!
-//               .map<Widget>((userData) => builduserListIteam(userData, context))
-//               .toList(),
-//         );
-//         //  ListView.builder(
-//         //   itemCount: snapshot.data!.length,
-//         //   // itemCount: 5,
-//         //   itemBuilder: (context, index) {
-//         //     return InkWell(
-//         //       onTap: () {
-//         //         Navigator.push(context, MaterialPageRoute(builder: (context) {
-//         //           if (snapshot.data![index]['email'] !=
-//         //               FirebaseAuth.instance.currentUser!.email) {
-//         //             return ChatScreen(
-//         //               // TODO
-//         //               recivername: snapshot.data![index]['email'],
-//         //               context: context,
-//         //               reciverId: snapshot.data![index]['uid'].toString(),
-//         //             );
-//         //           }
-//         //           return ChatServices().sendMessage(receiverId, messeage);
-//         //         }));
-//         //       },
-//         //       child: Card(
-//         //           child: ListTile(
-//         //         title: Text(snapshot.data![index]['name']),
-//         //         subtitle: Text(snapshot.data![index]['email']),
-//         //       )),
-//         //     );
-//         //   },
-//         // );
-//       },
-//     );
-//   }
-
-//   Widget builduserListIteam(
-//       Map<String, dynamic> userData, BuildContext context) {
-//     if (userData["email"] != _authServices.getCurrentUser()) {
-//       return InkWell(
-//         onTap: () {
-//           Navigator.push(
-//               context,
-//               MaterialPageRoute(
-//                 builder: (context) => ChatScreen(
-//                   context: context,
-//                   // reciverId: userData['uid'],
-//                   recivername: userData['email'],
-//                 ),
-//               ));
-//         },
-//         child: Card(
-//             child: ListTile(
-//           title: Text(userData['uid']),
-//           subtitle: Text(userData['email']),
-//         )),
-//       );
-//     } else {
-//       return Container();
-//     }
-//   }
-// }
-
 import 'package:chat_app/service/auth-services/auth_services.dart';
 import 'package:chat_app/service/chat-services/chat_services.dart';
 import 'package:chat_app/view/pages/chat_screen.dart';
+import 'package:chat_app/view/pages/signin_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
-  HomeScreen({Key? key}) : super(key: key);
+  HomeScreen({super.key});
   static const routePath = '/homescreen';
   final AuthServices _authServices = AuthServices();
   final ChatServices _chatServices = ChatServices();
@@ -114,63 +14,98 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text('ChatBox'),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SignInScreen(),
+                    ));
+              },
+              icon: const Icon(Icons.arrow_back))
+        ],
       ),
-      body: buildUserList(),
-    );
-  }
-
-  Widget buildUserList() {
-    return StreamBuilder<List<Map<String, dynamic>>>(
-      stream: _chatServices.getUserStream(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Center(child: Text('Error'));
-        }
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        }
-        final userList = snapshot.data!;
-        return ListView.builder(
-          itemCount: userList.length,
-          itemBuilder: (context, index) {
-            final userData = userList[index];
-            return buildUserListItem(userData, context);
-          },
-        );
-      },
-    );
-  }
-
-  Widget buildUserListItem(
-      Map<String, dynamic> userData, BuildContext context) {
-    final currentUserEmail = _authServices.getCurrentUser()!.email;
-    // final currentUserUid = _authServices.getCurrentUser()!.uid;
-    final userEmail = userData['email'] as String;
-    final userId = userData['uid'] as String;
-
-    if (userEmail != currentUserEmail) {
-      return InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ChatScreen(
-                recivername: userEmail,
-                reciverId: userId,
-              ),
-            ),
+      body: StreamBuilder<List<Map<String, dynamic>>>(
+        stream: _chatServices.getUserStream(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return const Center(child: Text('Error'));
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          final userList = snapshot.data!;
+          return ListView.builder(
+            itemCount: userList.length,
+            itemBuilder: (context, index) {
+              final userData = userList[index];
+              final userEmail = userData['email'] as String;
+              final userId = userData['uid'] as String;
+              final currentUserEmail = _authServices.getCurrentUser()!.email;
+              if (userEmail != currentUserEmail) {
+                return InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ChatScreen(
+                          receiverName: userEmail,
+                          receiverId: userId,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Card(
+                    elevation: 3,
+                    margin:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            // You can add user profile images here
+                            radius: 30,
+                            backgroundColor: Colors.grey[200],
+                            // child: Icon(Icons.person),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  userId,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                Text(
+                                  userEmail,
+                                  style: TextStyle(
+                                    color: Colors.grey[600],
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              } else {
+                return Container();
+              }
+            },
           );
         },
-        child: Card(
-          child: ListTile(
-            title: Text(userId),
-            subtitle: Text(userEmail),
-          ),
-        ),
-      );
-    } else {
-      return Container();
-    }
+      ),
+    );
   }
 }
