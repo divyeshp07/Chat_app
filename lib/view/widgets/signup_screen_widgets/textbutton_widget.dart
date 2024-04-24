@@ -20,14 +20,14 @@ class TextbuttonWidget extends StatelessWidget {
           children: [
             TextSpan(
               text: text,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 15,
               ),
             ),
             TextSpan(
               text: text1,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.blue,
                 fontSize: 15,
                 // decoration: TextDecoration.underline,

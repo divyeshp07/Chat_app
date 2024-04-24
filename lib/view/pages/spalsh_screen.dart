@@ -1,19 +1,21 @@
 import 'package:chat_app/view/pages/intro_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
+  static const routePath = '/splashscreen';
 
   @override
   Widget build(BuildContext context) {
     // for automatically next page
     Future.delayed(const Duration(seconds: 5), () {
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (_) => IntroScreen()));
+      context.go(IntroScreen.routePath);
     });
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 149, 96, 240),
+      // backgroundColor: const Color.fromARGB(255, 149, 96, 240),
+      backgroundColor: Colors.amber,
       body: Center(
         child: Transform(
           alignment: Alignment.center,

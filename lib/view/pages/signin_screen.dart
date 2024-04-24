@@ -1,23 +1,26 @@
+import 'package:chat_app/controller/auth_provider.dart';
 import 'package:chat_app/view/pages/sign_up_screen.dart';
-import 'package:chat_app/view/widgets/signup_screen_widgets/signup_texfeild_widget.dart';
+import 'package:chat_app/view/widgets/texfeild_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/core/extension/app_sizes.dart';
-import 'package:chat_app/view/pages/home_screen.dart';
 import 'package:chat_app/view/widgets/signup_screen_widgets/continuewith_button_widget.dart';
 import 'package:chat_app/view/widgets/signup_screen_widgets/textbutton_widget.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
-class SignInScreen extends StatelessWidget {
+class SignInScreen extends ConsumerWidget {
   SignInScreen({super.key});
+  static const routePath = '/signinscreen';
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController userNameController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 95, 47, 179),
+      // backgroundColor: Colors.tealAccent,
       body: SingleChildScrollView(
         child: Form(
           key: formKey,
@@ -37,7 +40,7 @@ class SignInScreen extends StatelessWidget {
               const SizedBox(
                 height: 40,
               ),
-              SignupTextFormFieldWidget(
+              TextFeildWidget(
                 controller: emailController,
                 labelText: 'Email',
                 prefixIcon: Icons.email,
@@ -59,7 +62,7 @@ class SignInScreen extends StatelessWidget {
               const SizedBox(
                 height: 25,
               ),
-              SignupTextFormFieldWidget(
+              TextFeildWidget(
                 controller: passwordController,
                 obscureText: true,
                 labelText: 'Password',
@@ -80,7 +83,7 @@ class SignInScreen extends StatelessWidget {
                 },
               ),
               const SizedBox(
-                height: 40,
+                height: 60,
               ),
               SizedBox(
                 height: 60,
@@ -88,19 +91,20 @@ class SignInScreen extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {
                     if (formKey.currentState!.validate()) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const HomeScreen(),
-                        ),
-                      );
+                      ref
+                          .watch(authenticationProvider.notifier)
+                          .signInWithEmail(
+                            context,
+                            emailController.text,
+                            passwordController.text,
+                          );
                     }
                   },
                   child: const Text('Sign In'),
                 ),
               ),
               const SizedBox(
-                height: 40,
+                height: 60,
               ),
               SizedBox(
                 width: MediaQuery.of(context).size.width,
@@ -160,11 +164,7 @@ class SignInScreen extends StatelessWidget {
               ),
               TextbuttonWidget(
                 onpress: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SignUpScreen(),
-                      ));
+                  context.go(SignUpScreen.routePath);
                 },
                 text: 'Don\'t have an account? ',
                 text1: 'SignUp',

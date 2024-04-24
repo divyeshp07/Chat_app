@@ -41,7 +41,7 @@ class AuthScreenContinuewithWidget extends StatelessWidget {
             const SizedBox(width: 20),
             Text(
               text,
-              style: TextStyle(color: Colors.black),
+              style: const TextStyle(color: Colors.black),
               overflow: TextOverflow.clip,
             ),
           ],

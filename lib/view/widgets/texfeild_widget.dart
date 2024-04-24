@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class SignupTextFormFieldWidget extends StatelessWidget {
+class TextFeildWidget extends StatelessWidget {
   final String labelText;
   final IconData prefixIcon;
   final bool obscureText;
   final TextEditingController controller;
   final FormFieldValidator<String>? validator;
 
-  const SignupTextFormFieldWidget({
+  const TextFeildWidget({
     super.key,
     required this.labelText,
     required this.prefixIcon,

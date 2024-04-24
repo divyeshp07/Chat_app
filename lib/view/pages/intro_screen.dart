@@ -1,8 +1,10 @@
 import 'package:chat_app/view/pages/auth_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class IntroScreen extends StatelessWidget {
   const IntroScreen({super.key});
+  static const routePath = '/introscreen';
 
   @override
   Widget build(BuildContext context) {
@@ -36,11 +38,7 @@ class IntroScreen extends StatelessWidget {
             width: MediaQuery.of(context).size.width / 1.5,
             child: ElevatedButton(
               onPressed: () {
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const AuthScreen(),
-                    ));
+                context.go(AuthScreen.routePath);
               },
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.black,
