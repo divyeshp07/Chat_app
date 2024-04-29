@@ -33,7 +33,9 @@ class MainApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp.router(
       routerConfig: router,
+      // home: SettingsScreen(),
       debugShowCheckedModeBanner: false,
+      // home: ProfileCardScreen(),
       // home: HomeScreen(),
       // home: SplashScreen(),
       // home: IntroScreen(),

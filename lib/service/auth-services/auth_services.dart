@@ -32,7 +32,7 @@ class AuthServices {
           'email': userCredential.user!.email,
           'uid': userCredential.user!.uid,
           'name': 'name',
-          'timestamp': FieldValue.serverTimestamp()
+          'timestamp': DateTime.now(),
         },
       );
     } on FirebaseAuthException catch (e) {

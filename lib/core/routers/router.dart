@@ -4,6 +4,8 @@ import 'package:chat_app/view/pages/chat_screen.dart';
 import 'package:chat_app/view/pages/home_screen.dart';
 import 'package:chat_app/view/pages/intro_screen.dart';
 import 'package:chat_app/view/pages/otp_screen.dart';
+import 'package:chat_app/view/pages/profile_card_screen.dart';
+import 'package:chat_app/view/pages/setting_screen.dart';
 import 'package:chat_app/view/pages/sign_up_screen.dart';
 import 'package:chat_app/view/pages/signin_screen.dart';
 import 'package:chat_app/view/pages/signin_with_phone.dart';
@@ -74,7 +76,19 @@ final router = GoRouter(
     GoRoute(
       path: ChatScreen.routePath,
       builder: (context, state) {
-        return ChatScreen();
+        return const ChatScreen();
+      },
+    ),
+    GoRoute(
+      path: SettingsScreen.routePath,
+      builder: (context, state) {
+        return const SettingsScreen();
+      },
+    ),
+    GoRoute(
+      path: ProfileCardScreen.routePath,
+      builder: (context, state) {
+        return ProfileCardScreen();
       },
     ),
     GoRoute(

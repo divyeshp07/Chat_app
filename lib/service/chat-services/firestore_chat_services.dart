@@ -2,7 +2,7 @@ import 'package:chat_app/model/message_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class ChatServices {
+class ChatServicesFireStore {
   final db = FirebaseFirestore.instance;
   final currentUserId = FirebaseAuth.instance.currentUser!.uid;
   final currentUserEmail = FirebaseAuth.instance.currentUser!.email;

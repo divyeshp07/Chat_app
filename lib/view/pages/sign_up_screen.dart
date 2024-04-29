@@ -105,6 +105,7 @@ class SignUpScreen extends ConsumerWidget {
                 width: MediaQuery.of(context).size.width / 1.3,
                 child: ElevatedButton(
                   onPressed: () {
+                    print('object');
                     if (formKey.currentState!.validate()) {
                       ref
                           .watch(authenticationProvider.notifier)
