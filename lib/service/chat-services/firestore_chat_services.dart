@@ -1,5 +1,6 @@
 import 'package:chat_app/core/exceptions/base_exception.dart';
 import 'package:chat_app/model/message_model.dart';
+import 'package:chat_app/service/auth-services/auth_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -68,5 +69,17 @@ class ChatServicesFireStore {
     } on FirebaseFirestore catch (e) {
       throw BaseException(e.toString());
     }
+  }
+
+  Future<DocumentSnapshot<Map<String, dynamic>>> getCurrentUserDoc() async {
+    final String uid = AuthServices().getCurrentUser()!.uid;
+    return await db.collection('Users').doc(uid).get();
+  }
+
+  Future<void> addAvatar({required String uid, required String url}) async {
+    await db
+        .collection('Users')
+        .doc(uid)
+        .set({'avatar': url}, SetOptions(merge: true));
   }
 }

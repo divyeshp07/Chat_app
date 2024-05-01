@@ -1,4 +1,6 @@
+import 'package:chat_app/controller/user_provider/user_doc_provider.dart';
 import 'package:chat_app/service/auth-services/auth_services.dart';
+import 'package:chat_app/service/chat-services/firestore_chat_services.dart';
 import 'package:chat_app/service/chat-services/storage_chat_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,13 +31,33 @@ class ProfileCardScreen extends ConsumerWidget {
             ),
             GestureDetector(
               onTap: () async {
-                ChatServicesStorage()
+                final String? imageUrl = await ChatServicesStorage()
                     .getPhoto(ref, AuthServices().getCurrentUser()!.uid);
+                ref.watch(provider) != null
+                    ? await ChatServicesFireStore()
+                        .addAvatar(
+                            uid: AuthServices().getCurrentUser()!.uid,
+                            url: ref.watch(provider)!)
+                        .then((value) {
+                        ref.invalidate(userDocProvider);
+                      })
+                    : null;
               },
               child: CircleAvatar(
-                backgroundImage: ref.watch(provider) == null
-                    ? null
-                    : NetworkImage(ref.watch(provider)!),
+                // backgroundImage: ref.watch(provider) == null
+                // ? null
+                //     : NetworkImage(ref.watch(provider)!),
+                backgroundImage: ref.watch(userDocProvider).when(
+                      data: (data) {
+                        if (data.data()!['avatar'] != null) {
+                          return NetworkImage(data.data()!['avatar']);
+                        } else {
+                          return null;
+                        }
+                      },
+                      error: (error, stackTrace) => null,
+                      loading: () => null,
+                    ),
                 radius: 90,
                 child: const Stack(
                   clipBehavior: Clip.none,

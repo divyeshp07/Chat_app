@@ -1,4 +1,5 @@
 import 'package:chat_app/controller/auth_provider/auth_provider.dart';
+import 'package:chat_app/controller/user_provider/user_doc_provider.dart';
 import 'package:chat_app/service/auth-services/auth_services.dart';
 import 'package:chat_app/service/chat-services/storage_chat_services.dart';
 import 'package:chat_app/view/pages/profile_card_screen.dart';
@@ -38,9 +39,17 @@ class SettingsScreen extends ConsumerWidget {
               child: Card(
                 child: ListTile(
                   leading: CircleAvatar(
-                    backgroundImage: ref.watch(provider) == null
-                        ? null
-                        : NetworkImage(ref.watch(provider)!),
+                    backgroundImage: ref.watch(userDocProvider).when(
+                          data: (data) {
+                            if (data.data()!['avatar'] != null) {
+                              return NetworkImage(data.data()!['avatar']);
+                            } else {
+                              return null;
+                            }
+                          },
+                          error: (error, stackTrace) => null,
+                          loading: () => null,
+                        ),
                     radius: 40,
                   ),
                   title: Text(
