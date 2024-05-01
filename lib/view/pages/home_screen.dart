@@ -1,14 +1,15 @@
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
+import 'package:chat_app/controller/auth_provider/auth_provider.dart';
 import 'package:chat_app/service/auth-services/auth_services.dart';
 import 'package:chat_app/service/chat-services/firestore_chat_services.dart';
 import 'package:chat_app/view/pages/chat_screen.dart';
 import 'package:chat_app/view/pages/setting_screen.dart';
-import 'package:chat_app/view/pages/signin_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ConsumerWidget {
   HomeScreen({super.key});
   final AuthServices _authServices = AuthServices();
   final ChatServicesFireStore _chatServices = ChatServicesFireStore();
@@ -17,7 +18,7 @@ class HomeScreen extends StatelessWidget {
   static const routePath = '/homescreen';
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
@@ -25,11 +26,7 @@ class HomeScreen extends StatelessWidget {
           actions: [
             IconButton(
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SignInScreen(),
-                      ));
+                  ref.watch(authenticationProvider.notifier).logOut(context);
                 },
                 icon: const Icon(Icons.arrow_back))
           ],
@@ -50,6 +47,8 @@ class HomeScreen extends StatelessWidget {
                 final userData = userList[index];
                 final userEmail = userData['email'];
                 final userId = userData['uid'];
+                final name = userData['name'];
+                final profile = userData['profile'];
                 final currentUserEmail = _authServices.getCurrentUser()!.email;
                 if (userEmail != currentUserEmail) {
                   return InkWell(
@@ -60,6 +59,7 @@ class HomeScreen extends StatelessWidget {
                           builder: (context) => ChatScreen(
                             receiverName: userEmail,
                             receiverId: userId,
+                            name: name,
                           ),
                         ),
                       );
@@ -75,7 +75,7 @@ class HomeScreen extends StatelessWidget {
                             CircleAvatar(
                               radius: 30,
                               backgroundColor: Colors.grey[200],
-                              child: Text('$index'),
+                              backgroundImage: profile,
                               // child: Icon(Icons.person),
                             ),
                             const SizedBox(width: 10),
@@ -84,7 +84,7 @@ class HomeScreen extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    userId,
+                                    name,
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16,

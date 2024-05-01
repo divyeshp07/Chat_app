@@ -1,4 +1,4 @@
-import 'package:chat_app/controller/auth_provider.dart';
+import 'package:chat_app/controller/auth_provider/auth_provider.dart';
 import 'package:chat_app/view/pages/signin_screen.dart';
 import 'package:chat_app/view/widgets/texfeild_widget.dart';
 import 'package:flutter/material.dart';

@@ -1,172 +1,47 @@
-// import 'package:chat_app/service/chat-services/firestore_chat_services.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:flutter/material.dart';
-
-// class ChatScreen extends StatelessWidget {
-//   final String? receiverName;
-//   final String? receiverId;
-
-//   const ChatScreen({super.key, this.receiverName, this.receiverId});
-//   static const routePath = '/chatScreen';
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final TextEditingController messageController = TextEditingController();
-//     final currentUserId = FirebaseAuth.instance.currentUser!.uid;
-
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text(receiverName ?? ''),
-//       ),
-//       body: Column(
-//         children: [
-//           Expanded(
-//             child: StreamBuilder<QuerySnapshot>(
-//               stream: ChatServicesFireStore()
-//                   .getMessage(currentUserId, receiverId!),
-//               builder: (context, snapshot) {
-//                 if (snapshot.hasError) {
-//                   return const Center(child: Text('Error'));
-//                 }
-//                 if (snapshot.connectionState == ConnectionState.waiting) {
-//                   return const Center(child: CircularProgressIndicator());
-//                 }
-
-//                 final messages = snapshot.data!.docs;
-//                 return ListView.builder(
-//                   itemCount: messages.length,
-//                   itemBuilder: (context, index) {
-//                     final messageData =
-//                         messages[index].data() as Map<String, dynamic>;
-//                     final isCurrentUser =
-//                         messageData['senderId'] == currentUserId;
-//                     final DateTime dt = messageData['timestamp'].toDate();
-
-//                     return Align(
-//                       alignment: isCurrentUser
-//                           ? Alignment.centerRight
-//                           : Alignment.centerLeft,
-//                       child: Column(
-//                         crossAxisAlignment: isCurrentUser
-//                             ? CrossAxisAlignment.end
-//                             : CrossAxisAlignment.start,
-//                         children: [
-//                           Container(
-//                             margin: const EdgeInsets.symmetric(
-//                                 vertical: 8, horizontal: 10),
-//                             padding: const EdgeInsets.all(12),
-//                             decoration: BoxDecoration(
-//                               color: isCurrentUser
-//                                   ? Colors.blue
-//                                   : Colors.grey[300],
-//                               borderRadius: BorderRadius.circular(16),
-//                             ),
-//                             child: Text(
-//                               messageData['messeage'],
-//                               style: TextStyle(
-//                                 color:
-//                                     isCurrentUser ? Colors.white : Colors.black,
-//                                 fontSize: 16,
-//                               ),
-//                             ),
-//                           ),
-//                           Padding(
-//                             padding: const EdgeInsets.only(
-//                               left: 14,
-//                               right: 14,
-//                             ),
-//                             child: Text(
-//                               "${dt.hour > 12 ? dt.hour - 12 : dt.hour}:${dt.minute}${dt.am}",
-//                               textAlign: isCurrentUser
-//                                   ? TextAlign.right
-//                                   : TextAlign.left,
-//                             ),
-//                           )
-//                         ],
-//                       ),
-//                     );
-//                   },
-//                 );
-//               },
-//             ),
-//           ),
-//           Container(
-//             padding: const EdgeInsets.all(8),
-//             decoration: BoxDecoration(
-//               border: Border(
-//                 top: BorderSide(color: Colors.grey[300]!),
-//               ),
-//             ),
-//             child: Row(
-//               children: [
-//                 Expanded(
-//                   child: TextField(
-//                     controller: messageController,
-//                     decoration: const InputDecoration(
-//                       hintText: 'Type your message...',
-//                       border: InputBorder.none,
-//                     ),
-//                   ),
-//                 ),
-//                 IconButton(
-//                   onPressed: () {
-//                     if (messageController.text.isNotEmpty) {
-//                       ChatServicesFireStore()
-//                           .sendMessage(receiverId!, messageController.text);
-//                       messageController.clear();
-//                     }
-//                   },
-//                   icon: const Icon(Icons.send),
-//                 ),
-//               ],
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-import 'package:chat_app/service/chat-services/firestore_chat_services.dart';
+import 'package:chat_app/controller/chat_provider/chat_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ChatScreen extends StatelessWidget {
-  final String? receiverName;
+class ChatScreen extends ConsumerWidget {
   final String? receiverId;
+  final String? receiverName;
+  final String? name;
 
-  // Constructor for ChatScreen
-  const ChatScreen({super.key, this.receiverName, this.receiverId});
+  const ChatScreen({super.key, this.receiverName, this.receiverId, this.name});
 
   static const routePath = '/chatScreen';
 
   @override
-  Widget build(BuildContext context) {
-    // Controller for text field
+  Widget build(BuildContext context, WidgetRef ref) {
     final TextEditingController messageController = TextEditingController();
     final currentUserId = FirebaseAuth.instance.currentUser!.uid;
+    final mychatprovider = ref.watch(chatProvider.notifier);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(receiverName ?? ''),
+        title: Text(name ?? ''),
       ),
       body: Column(
         children: [
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: ChatServicesFireStore()
-                  .getMessage(currentUserId, receiverId!),
+              stream: ref
+                  .watch(chatProvider.notifier)
+                  .getMessages(currentUserId, receiverId!, context),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
-                  return const Center(child: Text('Error'));
+                  return Center(
+                      child: Text('Error: ${snapshot.error.toString()}'));
                 }
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return const Center(child: Text('No messages yet.'));
+                }
 
-                // Retrieve messages from snapshot
                 final messages = snapshot.data!.docs;
                 return ListView.builder(
                   itemCount: messages.length,
@@ -186,7 +61,6 @@ class ChatScreen extends StatelessWidget {
                             ? CrossAxisAlignment.end
                             : CrossAxisAlignment.start,
                         children: [
-                          // Message container
                           Container(
                             margin: const EdgeInsets.symmetric(
                                 vertical: 8, horizontal: 10),
@@ -206,14 +80,10 @@ class ChatScreen extends StatelessWidget {
                               ),
                             ),
                           ),
-                          // Message timestamp
                           Padding(
-                            padding: const EdgeInsets.only(
-                              left: 14,
-                              right: 14,
-                            ),
+                            padding: const EdgeInsets.only(left: 14, right: 14),
                             child: Text(
-                              "${dt.hour > 12 ? dt.hour - 12 : dt.hour}:${dt.minute}${dt.hour > 12 ? 'PM' : 'AM'}",
+                              "${dt.hour > 12 ? dt.hour - 12 : dt.hour}:${dt.minute} ${dt.hour > 12 ? 'PM' : 'AM'}",
                               textAlign: isCurrentUser
                                   ? TextAlign.right
                                   : TextAlign.left,
@@ -227,7 +97,6 @@ class ChatScreen extends StatelessWidget {
               },
             ),
           ),
-          // Message input field and send button
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
@@ -249,8 +118,8 @@ class ChatScreen extends StatelessWidget {
                 IconButton(
                   onPressed: () {
                     if (messageController.text.isNotEmpty) {
-                      ChatServicesFireStore()
-                          .sendMessage(receiverId!, messageController.text);
+                      mychatprovider.sendMessage(receiverId!,
+                          messageController.text, context, name.toString());
                       messageController.clear();
                     }
                   },

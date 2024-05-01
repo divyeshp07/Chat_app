@@ -1,4 +1,4 @@
-import 'package:chat_app/controller/auth_provider.dart';
+import 'package:chat_app/controller/auth_provider/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';

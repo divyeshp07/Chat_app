@@ -31,7 +31,7 @@ class AuthServices {
         {
           'email': userCredential.user!.email,
           'uid': userCredential.user!.uid,
-          'name': 'name',
+          'name': username,
           'timestamp': DateTime.now(),
         },
       );

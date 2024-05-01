@@ -5,13 +5,15 @@ class MessageModel {
   String senderEmail;
   String receiverId;
   String messeage;
+  String name;
   Timestamp timestamp;
   MessageModel(
       {required this.senderId,
       required this.senderEmail,
       required this.receiverId,
       required this.messeage,
-      required this.timestamp});
+      required this.timestamp,
+      required this.name});
   Map<String, dynamic> toMap() {
     return {
       'senderId': senderId,
@@ -19,6 +21,7 @@ class MessageModel {
       'receiverId': receiverId,
       'messeage': messeage,
       'timestamp': timestamp,
+      'name': name,
     };
   }
 }

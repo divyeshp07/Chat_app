@@ -1,4 +1,4 @@
-import 'package:chat_app/controller/auth_provider.dart';
+import 'package:chat_app/controller/auth_provider/auth_provider.dart';
 import 'package:chat_app/controller/user_login_status/user_provider.dart';
 import 'package:chat_app/view/pages/home_screen.dart';
 import 'package:flutter/material.dart';

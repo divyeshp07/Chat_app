@@ -1,96 +1,16 @@
-// import 'package:chat_app/controller/auth_state.dart';
-// import 'package:chat_app/core/exceptions/auth_exception/signin_exception.dart';
-// import 'package:chat_app/core/exceptions/auth_exception/signup_exception.dart';
-// import 'package:chat_app/core/exceptions/base_exception.dart';
-// import 'package:chat_app/core/utils/snackbar_utils.dart';
-// import 'package:chat_app/service/auth-services/auth_services.dart';
-// import 'package:chat_app/view/pages/home_screen.dart';
-// import 'package:chat_app/view/pages/otp_screen.dart';
-// import 'package:flutter/widgets.dart';
-// import 'package:go_router/go_router.dart';
-// import 'package:riverpod_annotation/riverpod_annotation.dart';
-// part 'auth_provider.g.dart';
-
-// @Riverpod(keepAlive: true)
-// class Authentication extends _$Authentication {
-//   @override
-//   AuthState build() {
-//     return AuthState(varificationId: '', resendToken: null);
-//   }
-
-//   Future<void> signUpwithEmail(BuildContext context, String email,
-//       String password, String username) async {
-//     try {
-//       await AuthServices().signUP(username, email, password);
-//       Future.sync(() => context.push(HomeScreen.routePath));
-//     } on SignUpException catch (e) {
-//       Future.sync(() => SnackbarUtils.showMessage(context, e.message));
-//     } on BaseException catch (e) {
-//       Future.sync(() => SnackbarUtils.showMessage(context, e.message));
-//     }
-//   }
-
-//   Future<void> signInWithEmail(
-//       BuildContext context, String email, String password) async {
-//     try {
-//       await AuthServices().signIn(email, password);
-//       Future.sync(() => context.go(HomeScreen.routePath));
-//     } on SigninException catch (e) {
-//       Future.sync(() => SnackbarUtils.showMessage(context, e.message));
-//     } on BaseException catch (e) {
-//       Future.sync(() => SnackbarUtils.showMessage(context, e.message));
-//     }
-//   }
-
-//   Future<void> signinWithGoogle(BuildContext context) async {
-//     try {
-//       await AuthServices().continueWithGoogle();
-//       Future.sync(() => context.go(HomeScreen.routePath));
-//     } on BaseException catch (e) {
-//       Future.sync(() => SnackbarUtils.showMessage(context, e.message));
-//     }
-//   }
-
-//   Future<void> signInWithFacebook(BuildContext context) async {
-//     try {
-//       await AuthServices().continueWithFacebook();
-//       Future.sync(() => context.go(HomeScreen.routePath));
-//     } on BaseException catch (e) {
-//       Future.sync(() => SnackbarUtils.showMessage(context, e.message));
-//     }
-//   }
-
-//   Future<void> signInWithPhone(BuildContext context, String phone) async {
-//     try {
-//       await AuthServices().signInwithPhone(phone);
-//       Future.sync(() => context.push(OtpScreen.routePath));
-//     } on BaseException catch (e) {
-//       Future.sync(() => SnackbarUtils.showMessage(context, e.message));
-//     }
-//   }
-
-//   Future<void> verifyOtp(
-//       BuildContext context, String otp, String verificationId) async {
-//     try {
-//       await AuthServices().verifyOtp(verificationId, otp);
-//       Future.sync(() => context.push(HomeScreen.routePath));
-//     } on BaseException catch (e) {
-//       Future.sync(() => SnackbarUtils.showMessage(context, e.message));
-//     }
-//   }
-// }
-
 import 'dart:developer';
 
-import 'package:chat_app/controller/auth_state.dart';
+import 'package:chat_app/controller/auth_provider/auth_state.dart';
 import 'package:chat_app/controller/user_login_status/user_provider.dart';
 import 'package:chat_app/core/exceptions/auth_exception/signin_exception.dart';
 import 'package:chat_app/core/exceptions/auth_exception/signup_exception.dart';
 import 'package:chat_app/core/exceptions/base_exception.dart';
 import 'package:chat_app/core/utils/snackbar_utils.dart';
+import 'package:chat_app/core/utils/toster_util.dart';
 import 'package:chat_app/service/auth-services/auth_services.dart';
 import 'package:chat_app/view/pages/home_screen.dart';
 import 'package:chat_app/view/pages/otp_screen.dart';
+import 'package:chat_app/view/pages/sign_up_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -197,6 +117,18 @@ class Authentication extends _$Authentication {
     try {
       return AuthServices().loginStatus();
     } on BaseException catch (e) {
+      throw Future.sync(() => SnackbarUtils.showMessage(context, e.message));
+    }
+  }
+
+  Future<void> logOut(BuildContext context) async {
+    try {
+      await AuthServices().signout();
+      await Future.sync(
+          () => TosterUtil.showMessage(context, 'logedd Out SucessFully..!'));
+
+      await Future.sync(() => context.go(SignUpScreen.routePath));
+    } on FirebaseException catch (e) {
       throw Future.sync(() => SnackbarUtils.showMessage(context, e.message));
     }
   }
