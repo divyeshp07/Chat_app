@@ -58,7 +58,7 @@ final router = GoRouter(
     GoRoute(
       path: IntroScreen.routePath,
       builder: (context, state) {
-        return const AuthScreen();
+        return const IntroScreen();
       },
     ),
     GoRoute(

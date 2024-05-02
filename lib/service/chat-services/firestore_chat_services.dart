@@ -71,15 +71,21 @@ class ChatServicesFireStore {
     }
   }
 
+// for uploading profile geting the document id
   Future<DocumentSnapshot<Map<String, dynamic>>> getCurrentUserDoc() async {
     final String uid = AuthServices().getCurrentUser()!.uid;
     return await db.collection('Users').doc(uid).get();
   }
 
+// adding a new feild to the doc avathar
   Future<void> addAvatar({required String uid, required String url}) async {
     await db
         .collection('Users')
         .doc(uid)
         .set({'avatar': url}, SetOptions(merge: true));
+  }
+
+  Future<void> updateName(dynamic value, String uid) async {
+    await db.collection('Users').doc(uid).update({'name': value});
   }
 }

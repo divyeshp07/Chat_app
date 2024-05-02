@@ -1,3 +1,4 @@
+import 'package:chat_app/controller/user_provider/user_doc_provider.dart';
 import 'package:chat_app/core/utils/snackbar_utils.dart';
 import 'package:chat_app/service/chat-services/firestore_chat_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -42,6 +43,16 @@ class Chat extends _$Chat {
     } on FirebaseFirestore catch (_) {
       throw Future.sync(
           () => SnackbarUtils.showMessage(context, 'something went wrangg'));
+    }
+  }
+
+  updateCurrentUsername(String value, String uid, BuildContext context) async {
+    try {
+      await ChatServicesFireStore().updateName(value, uid);
+      ref.invalidate(userDocProvider);
+    } on FirebaseException catch (_) {
+      throw Future.sync(
+          () => SnackbarUtils.showMessage(context, 'Cant Update the name'));
     }
   }
 }
